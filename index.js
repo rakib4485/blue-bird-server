@@ -210,6 +210,24 @@ async function run() {
       res.send(result);
     })
 
+    app.put('/booking/:id', async(req, res) => {
+      const id = req.params.id;
+      const action = req.body;
+      const filter = {_id : new ObjectId(id)};
+      const option = { upsert: true };
+      let updatedDoc = {
+        $set: {
+          action: action.action
+        }
+      };
+      const result = await bookingCollection.updateOne(
+        filter,
+        updatedDoc,
+        option
+      );
+      res.send({ acknowledged: true });
+    })
+
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
       const query = {
@@ -367,16 +385,16 @@ async function run() {
 
     // temporary to update a field
     app.get('/addIsRent', async (req, res) => {
-      const filter = {};
+      const filter = { area: 'Ghulshan'};
       const option = { upsert: true };
       const updatedDoc = {
         $set: {
-          video: 'https://res.cloudinary.com/dohgbs7uo/video/upload/v1704089069/5_hximfv.mp4'
+          location: 'House: 55,  Road: 3, Ghulshan, Dhaka, Bangladesh'
         }
       }
       const result = await propertyCollection.updateMany(filter, updatedDoc, option);
       res.send(result);
-    })
+    });
 
   }
   finally {
